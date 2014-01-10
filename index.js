@@ -1,4 +1,3 @@
-
 var dns = require('native-dns'),
     http = require('http'),
     util = require('util'),
@@ -17,8 +16,9 @@ var dns = require('native-dns'),
 var log = fs.createWriteStream(argv.log_file, {'flags': 'a', encoding: null});
 
 // proxy hash table
+// "target-host" : "returned-host"
 var hashMap = {
-  "www.example.example.com" : "127.0.0.1"
+  "www.example.com" : "127.0.0.1"
 };
 
 // dns proxy server
@@ -32,7 +32,6 @@ var onMessage = function (request, response) {
 
   // parse request
   if( hashMap[ host ] ) {
-
     // intercept & reroute
     var newHost = hashMap[ host ];
 
