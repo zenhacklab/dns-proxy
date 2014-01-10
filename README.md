@@ -1,4 +1,4 @@
 dns-proxy
 =========
 
-A simple DNS proxy server that can intercept targetted requests and forward the rest.
+A simple DNS proxy server that can intercept targeted requests and forward the rest.
