@@ -2,18 +2,21 @@ var dns = require('native-dns'),
     http = require('http'),
     util = require('util'),
     fs = require('fs'),
+    options = require('commander'),
     tcpserver = dns.createTCPServer(),
-    server = dns.createServer(),
-    argv = require('optimist')
-    .default('dns_host', '127.0.0.1')
-    .default('web_host', '127.0.0.1')
-    .default('dns_proxy', '8.8.8.8')
-    .default('dns_port', 53)
-    .default('web_port', 80)
-    .default('log_file', 'log.txt')
-    .argv;
+    server = dns.createServer();
 
-var log = fs.createWriteStream(argv.log_file, {'flags': 'a', encoding: null});
+options
+  .version('0.1.0')
+  .option('-dh, --dns_host [ip]', 'DNS Host Address', '127.0.0.1')
+  .option('-wh, --web_host [ip]', 'HTTP Server Host Address', '127.0.0.1')
+  .option('-dph, --dns_proxy [ip]', 'DNS Proxy Host Address', '8.8.8.8')
+  .option('-dp, --dns_port [port]', 'DNS Server Port', 53)
+  .option('-wp, --web_port [port]', 'HTTP Server Port', 1337)
+  .option('-lf, --log_file [file]', 'Log file name', 'log.txt')
+  .parse(process.argv);
+
+var log = fs.createWriteStream(options.log_file, {'flags': 'a', encoding: null});
 
 // proxy hash table
 // "target-host" : "returned-host"
@@ -57,7 +60,7 @@ var onMessage = function (request, response) {
 
     var newreq = dns.Request({
       question: question,
-      server: { address: argv.dns_proxy, port: 53, type: 'udp' },
+      server: { address: options.dns_proxy, port: 53, type: 'udp' },
       timeout: 1000,
     });
 
@@ -107,8 +110,8 @@ tcpserver.on('listening', onListening);
 tcpserver.on('socketError', onSocketError);
 tcpserver.on('close', onClose);
 
-server.serve(argv.dns_port, argv.dns_host);
-tcpserver.serve(argv.dns_port, argv.dns_host);
+server.serve(options.dns_port, options.dns_host);
+tcpserver.serve(options.dns_port, options.dns_host);
 
 // http server
 var onRequest = function (req, res) {
@@ -121,6 +124,6 @@ var onRequest = function (req, res) {
   });
 };
 
-http.createServer( onRequest ).listen(argv.web_port, argv.web_host);
+http.createServer( onRequest ).listen(options.web_port, options.web_host);
 
-console.log('web server listening on '+ argv.web_host +':'+ argv.web_port);
+console.log('web server listening on '+ options.web_host +':'+ options.web_port);

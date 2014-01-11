@@ -21,9 +21,9 @@ To start dns-proxy with the default settings simply type
 npm start
 ```
 
-You can then navigate to the web interface to read the log easily, which by default is http://127.0.0.1:80
+You can then navigate to the web interface to read the log easily, which by default is http://127.0.0.1:1337
 
-To change settings you simply pass them as command-line arguments
+To see the available options simply type
 ```
-node ./index.js --web_host 127.0.0.1 --web_port 80 --dns_host 127.0.0.1 --dns_port 53 --dns_proxy 8.8.8.8 --log_file log.txt
+node ./index --help
 ```
